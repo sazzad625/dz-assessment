@@ -8,7 +8,7 @@ This should give you the following directory structure:
 
 `$ tree`  
 
-```.
+```
 ├── docker
 │   ├── services
 │   │   ├── app
