@@ -8,8 +8,8 @@ This should give you the following directory structure:
 
 `$ tree`  
 
-```
-├── docker
+
+```├── docker
 │   ├── services
 │   │   ├── app
 │   │   └── web
@@ -20,14 +20,13 @@ This should give you the following directory structure:
 
 8 directories, 0 files```
 
-SOURCE CONTROL
+# SOURCE CONTROL
 It is very likely that you are going to use Git as your source control, hence some extra steps are needed. Within both mysql and redis directories, create new empty file and name it .gitkeep.
 
 `touch docker/volumes/mysql/.gitkeep`
 `touch docker/volumes/redis/.gitkeep`
 Now in the root create `.gitignore` file with the following content:
-```
-!docker/volumes/mysql
+```!docker/volumes/mysql
 docker/volumes/mysql/*
 !docker/volumes/mysql/.gitkeep
 
@@ -36,21 +35,20 @@ docker/volumes/redis/*
 !docker/volumes/redis/.gitkeep
 
 .DS_Store
-.idea
-```  
+.idea```  
 
 What this is telling us?
 We use Docker volumes as a way to persist our data. This setup guarantees that once we shut down Docker containers or even turn off our host machine, no data will be lost. Obviously we don't want any clutter to be part of the repository, hence we simply ignore the content within (not the directories themselves). Last two lines are optional and depend on both IDE and OS.
 
-#DOCKER SERVICES
+# DOCKER SERVICES
 This is the core part of this article.
 
 Let's start with the main app.dockerfile service.
 
 `touch docker/services/app/app.dockerfile`
 Content of the app.dockerfile:
-```
-FROM php:8.1-fpm
+
+```FROM php:8.1-fpm
 
 WORKDIR /var/www
 
@@ -98,8 +96,7 @@ RUN apt-get update && apt-get install -y cron
 RUN echo "* * * * * root php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1" >> /etc/crontab
 RUN touch /var/log/cron.log
 
-CMD bash -c "cron && php-fpm"
- ```  
+CMD bash -c "cron && php-fpm"```  
 
 Explain please?
 Our Laravel application will be based on PHP 8.1-fpm image
@@ -113,19 +110,20 @@ We install Node.js to be able to use the npm package manager to work with our fr
 Finally, we want to have Laravel Scheduler up and running in the background. We install the cron package, next we add the only entry into crontab we need. Lastly we create the log file so that we can tail it when needed
 Now, create 2 essential files for the web service.
 
-touch docker/services/web/web.dockerfile
-touch docker/services/web/vhost.conf
+`touch docker/services/web/web.dockerfile`
+`touch docker/services/web/vhost.conf`
 Content of the web.dockerfile:
 
-FROM nginx:1.21
+```FROM nginx:1.21
 
 COPY vhost.conf /etc/nginx/conf.d/default.conf
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
-RUN ln -sf /dev/stderr /var/log/nginx/error.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log```
+
 Content of the vhost.conf:
 
-server {
+```server {
     listen 80;
     index index.php index.html;
     root /var/www/public;
@@ -142,8 +140,8 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param PATH_INFO $fastcgi_path_info;
     }
-}
- Explain please?
+}```
+Explain please?
 Our web server (service) will be based on Nginx 1.21 image
 We copy server settings (vhost.conf) into container's location (where the default file is located) so that we override it
 Server is going to listen on port 80
@@ -153,10 +151,10 @@ We create 2 symbolic links to output logs into a file
 MAIN DOCKER-COMPOSE.YML FILE
 In the root type:
 
-touch docker-compose.yml
+`touch docker-compose.yml`
 As content:
 
-version: "3.8"
+```version: "3.8"
 services:
   # Application
   app:
@@ -215,7 +213,7 @@ services:
       driver: "none"
     ports:
       - "1025:1025"
-      - "8025:8025"
+      - "8025:8025"```
  Let's finally break down this one…
 This is the main YAML file where we define all:
 
