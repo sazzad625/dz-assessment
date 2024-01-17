@@ -16,20 +16,17 @@ This should give you the following directory structure:
 │   └── volumes
 │       ├── mysql
 │       └── redis
-└── src```
+└── src
 
-8 directories, 0 files
-
-Hey! Calling tree gives me command not found: tree
-Solve it by installing the package via Homebrew → brew install tree
+8 directories, 0 files```
 
 SOURCE CONTROL
 It is very likely that you are going to use Git as your source control, hence some extra steps are needed. Within both mysql and redis directories, create new empty file and name it .gitkeep.
 
-touch docker/volumes/mysql/.gitkeep
-touch docker/volumes/redis/.gitkeep
-Now in the root create .gitignore file with the following content:
-
+`touch docker/volumes/mysql/.gitkeep`
+`touch docker/volumes/redis/.gitkeep`
+Now in the root create `.gitignore` file with the following content:
+```
 !docker/volumes/mysql
 docker/volumes/mysql/*
 !docker/volumes/mysql/.gitkeep
@@ -40,17 +37,19 @@ docker/volumes/redis/*
 
 .DS_Store
 .idea
- What this is telling us?
+```  
+
+What this is telling us?
 We use Docker volumes as a way to persist our data. This setup guarantees that once we shut down Docker containers or even turn off our host machine, no data will be lost. Obviously we don't want any clutter to be part of the repository, hence we simply ignore the content within (not the directories themselves). Last two lines are optional and depend on both IDE and OS.
 
-DOCKER SERVICES
+#DOCKER SERVICES
 This is the core part of this article.
 
 Let's start with the main app.dockerfile service.
 
-touch docker/services/app/app.dockerfile
+`touch docker/services/app/app.dockerfile`
 Content of the app.dockerfile:
-
+```
 FROM php:8.1-fpm
 
 WORKDIR /var/www
@@ -65,12 +64,12 @@ RUN apt-get update && apt-get install -y \
     vim \
     zip
 
-# Clear cache
+### Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
+### Install PHP extensions
 
-# Graphics Draw
+### Graphics Draw
 RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
@@ -78,29 +77,31 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
-# Multibyte String
+### Multibyte String
 RUN apt-get update && apt-get install -y libonig-dev && docker-php-ext-install mbstring
 
-# Miscellaneous
+### Miscellaneous
 RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install exif
 RUN docker-php-ext-install pdo_mysql
 
-# Install Composer
+### Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install specific version of Node.js with npm through nvm
+### Install specific version of Node.js with npm through nvm
 SHELL ["/bin/bash", "--login", "-c"]
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 RUN nvm install v16.17.0
 
-# Install Cron
+### Install Cron
 RUN apt-get update && apt-get install -y cron
 RUN echo "* * * * * root php /var/www/artisan schedule:run >> /var/log/cron.log 2>&1" >> /etc/crontab
 RUN touch /var/log/cron.log
 
 CMD bash -c "cron && php-fpm"
- Explain please?
+ ```  
+
+Explain please?
 Our Laravel application will be based on PHP 8.1-fpm image
 We define a WORKDIR which represents the relative path to the destination location for the app's files
 We install both mandatory tools that are needed down the line
