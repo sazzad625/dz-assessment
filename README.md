@@ -1,13 +1,14 @@
 #PREPARATIONS
 Create a set of new directories inside ~/Code to put the project we are building.
 
-`mkdir -p foo-com/docker/services/{app,web} foo-com/docker/volumes/{mysql,redis} foo-com/src`  
-`cd foo-com`  
-`tree`  
+`$ mkdir -p foo-com/docker/services/{app,web} foo-com/docker/volumes/{mysql,redis} foo-com/src`  
+`$ cd foo-com`  
+`$ tree`  
 This should give you the following directory structure:
 
 `$ tree`  
-```.
+
+```bash.
 ├── docker
 │   ├── services
 │   │   ├── app
@@ -15,7 +16,7 @@ This should give you the following directory structure:
 │   └── volumes
 │       ├── mysql
 │       └── redis
-└── src```
+└── src
 
 8 directories, 0 files
  Hey! Calling tree gives me command not found: tree
