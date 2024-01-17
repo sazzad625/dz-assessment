@@ -1,4 +1,4 @@
-#PREPARATIONS
+# PREPARATIONS
 Create a set of new directories inside ~/Code to put the project we are building.
 
 `$ mkdir -p foo-com/docker/services/{app,web} foo-com/docker/volumes/{mysql,redis} foo-com/src`  
