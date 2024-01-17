@@ -18,7 +18,7 @@ This should give you the following directory structure:
 │       └── redis
 └── src
 
-8 directories, 0 files
+8 directories, 0 files```
  Hey! Calling tree gives me command not found: tree
 Solve it by installing the package via Homebrew → brew install tree
 
